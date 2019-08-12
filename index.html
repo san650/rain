@@ -43,7 +43,7 @@
     }
   </style>
   <body>
-    <div id="canvas" class="container"></div>
+    <div id="canvas" class="container" tabindex=0></div>
 
     <script>
 
@@ -51,6 +51,7 @@
       function create(letter) {
         var span = document.createElement('span');
         span.innerText = letter.symbol;
+        span.setAttribute('data-symbol', letter.symbol);
         span.style.left = letter.x;
         span.classList.add('letter');
         span.classList.add('rain');
@@ -78,6 +79,11 @@
         return letters[index];
       }
 
+      function deleteElement(element) {
+        var container = element.parentElement;
+        container.removeChild(element);
+      }
+
       window.setInterval(function generator() {
         create({
           symbol: randomSymbol(),
@@ -88,10 +94,20 @@
 
       // cleanup
       container.addEventListener("animationend", function(event) {
-        var element = event.target;
-        var container = element.parentElement;
-        container.removeChild(element);
+        deleteElement(event.target);
       }, false);
+
+      // keyboard
+      container.addEventListener("keypress", function(event) {
+        var key = event.key;
+        var span = document.querySelector('[data-symbol="'+ key +'"]');
+
+        if (span) {
+          deleteElement(span);
+          console.log('BOOM');
+        }
+      }, false);
+
 
       // var initialState = [
       //   { symbol: "a", x: '10%', duration: 0},
