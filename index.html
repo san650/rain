@@ -1,0 +1,104 @@
+<html>
+  <style>
+    .letter {
+      border: 1px solid blue;
+      padding: 5px;
+      font: 14px;
+      font-weight: bold;
+      color: red;
+      display: block;
+      position: fixed;
+      x
+    }
+
+    .rain {
+      animation-name: rain;
+      animation-iteration-count: 1;
+      animation-direction: normal; /* we can play with reverse as a nice effect */
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    .d0 { animation-duration: 4s; }
+    .d1 { animation-duration: 5s; }
+    .d2 { animation-duration: 6s; }
+    .d3 { animation-duration: 7s; }
+    .d4 { animation-duration: 8s; }
+    .d5 { animation-duration: 9s; }
+    .d6 { animation-duration: 10s; }
+    .d7 { animation-duration: 11s; }
+    .d8 { animation-duration: 12s; }
+    .d9 { animation-duration: 13s; }
+
+    @keyframes rain {
+      from { transform: translate(0, 0); }
+      to { transform: translate(0, 100vh); }
+    }
+
+    html, body, .container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <body>
+    <div id="canvas" class="container"></div>
+
+    <script>
+
+      var container = document.getElementById('canvas');
+      function create(letter) {
+        var span = document.createElement('span');
+        span.innerText = letter.symbol;
+        span.style.left = letter.x;
+        span.classList.add('letter');
+        span.classList.add('rain');
+        span.classList.add('d' + letter.duration);
+
+        container.appendChild(span);
+      }
+
+      function random(n) {
+        return Math.floor(Math.random() * n);
+      }
+
+      function randomPercentage() {
+        return String(random(100)) + '%';
+      }
+
+      function randomDuration() {
+        return random(10);
+      }
+
+      function randomSymbol() {
+        var letters = 'abcdefghijklmnopqrstuvwxyz';
+        var index = random(letters.length);
+
+        return letters[index];
+      }
+
+      window.setInterval(function generator() {
+        create({
+          symbol: randomSymbol(),
+          x: randomPercentage(),
+          duration: randomDuration() - 5,
+        });
+      }, 500);
+
+      // cleanup
+      container.addEventListener("animationend", function(event) {
+        var element = event.target;
+        var container = element.parentElement;
+        container.removeChild(element);
+      }, false);
+
+      // var initialState = [
+      //   { symbol: "a", x: '10%', duration: 0},
+      //   { symbol: "b", x: '20%', duration: 1},
+      //   { symbol: "c", x: '40%', duration: 0},
+      //   { symbol: "d", x: '50%', duration: 2},
+      // ].forEach(create);
+    </script>
+  </body>
+</html>
