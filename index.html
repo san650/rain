@@ -28,27 +28,41 @@
     }
 
     .rain {
-      animation-name: rain;
+      animation-name: hit, rain;
       animation-iteration-count: 1;
       animation-direction: normal; /* we can play with reverse as a nice effect */
       animation-timing-function: linear;
       animation-fill-mode: forwards;
+      animation-play-state: paused, running;
     }
 
-    .d0 { animation-duration: 4s; }
-    .d1 { animation-duration: 5s; }
-    .d2 { animation-duration: 6s; }
-    .d3 { animation-duration: 7s; }
-    .d4 { animation-duration: 8s; }
-    .d5 { animation-duration: 9s; }
-    .d6 { animation-duration: 10s; }
-    .d7 { animation-duration: 11s; }
-    .d8 { animation-duration: 12s; }
-    .d9 { animation-duration: 13s; }
+    .hit {
+      animation-play-state: running, paused;
+    }
+
+    .container:not(:focus) .rain {
+      animation-play-state: paused, paused;
+    }
+
+    .d0 { animation-duration: .5s, 4s; }
+    .d1 { animation-duration: .5s, 5s; }
+    .d2 { animation-duration: .5s, 6s; }
+    .d3 { animation-duration: .5s, 7s; }
+    .d4 { animation-duration: .5s, 8s; }
+    .d5 { animation-duration: .5s, 9s; }
+    .d6 { animation-duration: .5s, 10s; }
+    .d7 { animation-duration: .5s, 11s; }
+    .d8 { animation-duration: .5s, 12s; }
+    .d9 { animation-duration: .5s, 13s; }
 
     @keyframes rain {
       from { transform: translate(0, 0); }
       to { transform: translate(0, 100vh); }
+    }
+
+    @keyframes hit {
+      from { opacity: 1; }
+      to { opacity: 0; }
     }
 
     html, body, .container {
@@ -72,7 +86,10 @@
     }
   </style>
   <body>
-    <div id="canvas" class="container" tabindex=0></div>
+    <div id="canvas" class="container" tabindex=0>
+      <span>Missed: <span id="missed">0</span></span>
+      <span>Hit: <span id="hit">0</span></span>
+    </div>
 
     <script>
       var container = document.getElementById('canvas');
@@ -120,6 +137,10 @@
       }
 
       window.setInterval(function generator() {
+        if (!document.hasFocus()) {
+          return;
+        }
+
         var symbol = randomSymbol();
 
         create({
@@ -130,28 +151,52 @@
         });
       }, 500);
 
+      var missedCount= 0;
+      var hitCount = 0;
+      var missedElement = document.getElementById('missed');
+      var hitElement = document.getElementById('hit');
+
+      function missed() {
+        missedCount++;
+        missedElement.innerText = missedCount;
+      }
+
+      function hit() {
+        hitCount++;
+        hitElement.innerText = hitCount;
+      }
+
       // cleanup
       container.addEventListener("animationend", function(event) {
-        deleteElement(event.target);
+        switch(event.animationName) {
+          case "rain":
+            missed();
+            deleteElement(event.target);
+            break;
+          case "hit":
+            deleteElement(event.target);
+            break;
+        }
       }, false);
 
       // keyboard
       container.addEventListener("keypress", function(event) {
         var key = event.key;
-        var span = document.querySelector('[data-symbol="'+ key.toUpperCase() +'"]');
+        var span = document.querySelector('.rain[data-symbol="'+ key.toUpperCase() +'"]:not(.hit)');
 
         if (span) {
-          deleteElement(span);
-          console.log('BOOM');
+          hit();
+          span.classList.add('hit');
+        } else {
+          missed();
         }
       }, false);
-      // var initialState = [
-      //   { symbol: "A", x: '10%', duration: 0, value: 1 },
-      //   { symbol: "B", x: '20%', duration: 1, value: 1 },
-      //   { symbol: "C", x: '40%', duration: 0, value: 1 },
-      //   { symbol: "D", x: '50%', duration: 2, value: 1 },
-      // ].forEach(create);
+
       container.focus();
+
+      // var initialState = [
+      //    { symbol: "A", x: '10%', duration: 0, value: 1 },
+      // ].forEach(create);
     </script>
   </body>
 </html>
