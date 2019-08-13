@@ -1,14 +1,30 @@
 <html>
   <style>
     .letter {
-      border: 1px solid blue;
-      padding: 5px;
-      font: 14px;
-      font-weight: bold;
-      color: red;
-      display: block;
       position: fixed;
-      x
+      display: block;
+      width: 50px;
+      height: 50px;
+      font-size: 14px;
+      font-weight: bold;
+      background: #DAC189;
+      color: #2C1901;
+      border: 2px solid #EBDDC0;
+    }
+    .letter::before {
+      font-size: 2rem;
+      margin: 5px 2px 0 0;
+      display: block;
+      width: 100%;
+      text-align: center;
+      content: attr(data-symbol);
+    }
+    .letter::after {
+      position: absolute;
+      bottom: 1px;
+      right: 7px;
+      display: block;
+      content: attr(data-symbol-value);
     }
 
     .rain {
@@ -41,17 +57,29 @@
       margin: 0;
       padding: 0;
     }
+
+    .container {
+      padding: 1rem;
+    }
+
+    .container:focus::after {
+      display: none;
+    }
+    .container::after {
+      color: red;
+      content: "CLICK THE PAGE TO BE ABLE TO PLAY!";
+      font-size: 2rem;
+    }
   </style>
   <body>
     <div id="canvas" class="container" tabindex=0></div>
 
     <script>
-
       var container = document.getElementById('canvas');
       function create(letter) {
         var span = document.createElement('span');
-        span.innerText = letter.symbol;
         span.setAttribute('data-symbol', letter.symbol);
+        span.setAttribute('data-symbol-value', letter.value);
         span.style.left = letter.x;
         span.classList.add('letter');
         span.classList.add('rain');
@@ -65,18 +93,25 @@
       }
 
       function randomPercentage() {
-        return String(random(100)) + '%';
+        // Use less than 100 so it doesn't overflow on the right
+        return String(Math.min(random(100), 95)) + '%';
       }
 
       function randomDuration() {
         return random(10);
       }
 
-      function randomSymbol() {
-        var letters = 'abcdefghijklmnopqrstuvwxyz';
-        var index = random(letters.length);
+      var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10];
 
-        return letters[index];
+      function randomSymbol() {
+        var index = random(LETTERS.length);
+        return LETTERS[index];
+      }
+
+      function valueForSymbol(symbol) {
+        var index = LETTERS.indexOf(symbol);
+        return VALUES[index];
       }
 
       function deleteElement(element) {
@@ -85,8 +120,11 @@
       }
 
       window.setInterval(function generator() {
+        var symbol = randomSymbol();
+
         create({
-          symbol: randomSymbol(),
+          symbol: symbol,
+          value: valueForSymbol(symbol),
           x: randomPercentage(),
           duration: randomDuration() - 5,
         });
@@ -100,21 +138,20 @@
       // keyboard
       container.addEventListener("keypress", function(event) {
         var key = event.key;
-        var span = document.querySelector('[data-symbol="'+ key +'"]');
+        var span = document.querySelector('[data-symbol="'+ key.toUpperCase() +'"]');
 
         if (span) {
           deleteElement(span);
           console.log('BOOM');
         }
       }, false);
-
-
       // var initialState = [
-      //   { symbol: "a", x: '10%', duration: 0},
-      //   { symbol: "b", x: '20%', duration: 1},
-      //   { symbol: "c", x: '40%', duration: 0},
-      //   { symbol: "d", x: '50%', duration: 2},
+      //   { symbol: "A", x: '10%', duration: 0, value: 1 },
+      //   { symbol: "B", x: '20%', duration: 1, value: 1 },
+      //   { symbol: "C", x: '40%', duration: 0, value: 1 },
+      //   { symbol: "D", x: '50%', duration: 2, value: 1 },
       // ].forEach(create);
+      container.focus();
     </script>
   </body>
 </html>
