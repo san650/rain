@@ -1,8 +1,14 @@
 <html>
   <style>
-    .letter {
-      position: fixed;
+    .word {
       display: block;
+      position: fixed;
+      height: 50px;
+    }
+
+    .letter {
+      display: inline-block;
+      position: relative;
       width: 50px;
       height: 50px;
       font-size: 14px;
@@ -11,6 +17,11 @@
       color: #2C1901;
       border: 2px solid #EBDDC0;
     }
+
+    .letter.hit {
+      background: yellow;
+    }
+
     .letter::before {
       font-size: 2rem;
       margin: 5px 2px 0 0;
@@ -19,6 +30,7 @@
       text-align: center;
       content: attr(data-symbol);
     }
+
     .letter::after {
       position: absolute;
       bottom: 1px;
@@ -36,7 +48,7 @@
       animation-play-state: paused, running;
     }
 
-    .hit {
+    .word.hit {
       animation-play-state: running, paused;
     }
 
@@ -44,16 +56,16 @@
       animation-play-state: paused, paused;
     }
 
-    .d0 { animation-duration: .5s, 4s; }
-    .d1 { animation-duration: .5s, 5s; }
-    .d2 { animation-duration: .5s, 6s; }
-    .d3 { animation-duration: .5s, 7s; }
-    .d4 { animation-duration: .5s, 8s; }
-    .d5 { animation-duration: .5s, 9s; }
-    .d6 { animation-duration: .5s, 10s; }
-    .d7 { animation-duration: .5s, 11s; }
-    .d8 { animation-duration: .5s, 12s; }
-    .d9 { animation-duration: .5s, 13s; }
+    .d0 { animation-duration: .5s, 10s; }
+    .d1 { animation-duration: .5s, 11s; }
+    .d2 { animation-duration: .5s, 12s; }
+    .d3 { animation-duration: .5s, 13s; }
+    .d4 { animation-duration: .5s, 14s; }
+    .d5 { animation-duration: .5s, 15s; }
+    .d6 { animation-duration: .5s, 16s; }
+    .d7 { animation-duration: .5s, 17s; }
+    .d8 { animation-duration: .5s, 18s; }
+    .d9 { animation-duration: .5s, 19s; }
 
     @keyframes rain {
       from { transform: translate(0, 0); }
@@ -84,6 +96,31 @@
       content: "CLICK THE PAGE TO BE ABLE TO PLAY!";
       font-size: 2rem;
     }
+
+    .shake {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+
+    @keyframes shake {
+      10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+      }
+
+      20%, 80% {
+        transform: translate3d(2px, 0, 0);
+      }
+
+      30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+      }
+
+      40%, 60% {
+        transform: translate3d(4px, 0, 0);
+      }
+    }
   </style>
   <body>
     <div id="canvas" class="container" tabindex=0>
@@ -93,16 +130,29 @@
 
     <script>
       var container = document.getElementById('canvas');
-      function create(letter) {
+
+      function createWord(word) {
+        console.log(word);
+
+        var span = document.createElement('span');
+        span.setAttribute('data-word', word.value);
+        span.style.left = word.x;
+        span.classList.add('word');
+        span.classList.add('rain');
+        span.classList.add('d' + word.duration);
+
+        word.letters.forEach((letter) => createLetter(span, letter));
+
+        container.appendChild(span);
+      }
+
+      function createLetter(parent, letter) {
         var span = document.createElement('span');
         span.setAttribute('data-symbol', letter.symbol);
         span.setAttribute('data-symbol-value', letter.value);
-        span.style.left = letter.x;
         span.classList.add('letter');
-        span.classList.add('rain');
-        span.classList.add('d' + letter.duration);
 
-        container.appendChild(span);
+        parent.appendChild(span);
       }
 
       function random(n) {
@@ -111,7 +161,7 @@
 
       function randomPercentage() {
         // Use less than 100 so it doesn't overflow on the right
-        return String(Math.min(random(100), 95)) + '%';
+        return String(Math.min(random(100), 60)) + '%';
       }
 
       function randomDuration() {
@@ -120,10 +170,25 @@
 
       var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10];
+      var WORDS = [
+        "black",
+        "blue",
+        "green",
+        "grey",
+        "magenta",
+        "maroon",
+        "olive",
+        "orange",
+        "pink",
+        "red",
+        "violet",
+        "white",
+        "yellow",
+      ];
 
-      function randomSymbol() {
-        var index = random(LETTERS.length);
-        return LETTERS[index];
+      function randomWord() {
+        var index = random(WORDS.length);
+        return WORDS[index];
       }
 
       function valueForSymbol(symbol) {
@@ -136,21 +201,32 @@
         container.removeChild(element);
       }
 
+      function toWord(word) {
+        word = word.toUpperCase();
+
+        var letters = word.split("").map(letter => ({
+          symbol: letter,
+          value: valueForSymbol(letter),
+        }));
+
+        return {
+          duration: randomDuration(),
+          letters: letters,
+          value: word,
+          // value: letters.reduce((sum, letter) => sum + letter.value, 0),
+          x: randomPercentage(),
+        };
+      }
+
       window.setInterval(function generator() {
         if (!document.hasFocus()) {
           return;
         }
 
-        var symbol = randomSymbol();
+        createWord(toWord(randomWord()));
+      }, 2000);
 
-        create({
-          symbol: symbol,
-          value: valueForSymbol(symbol),
-          x: randomPercentage(),
-          duration: randomDuration() - 5,
-        });
-      }, 500);
-
+      var current = "";
       var missedCount= 0;
       var hitCount = 0;
       var missedElement = document.getElementById('missed');
@@ -176,18 +252,47 @@
           case "hit":
             deleteElement(event.target);
             break;
+          case "shake":
+            container.classList.remove('shake');
+            break;
         }
       }, false);
 
       // keyboard
       container.addEventListener("keypress", function(event) {
-        var key = event.key;
-        var span = document.querySelector('.rain[data-symbol="'+ key.toUpperCase() +'"]:not(.hit)');
+        if (container.matches('.shake')) {
+          return;
+        }
 
-        if (span) {
-          hit();
-          span.classList.add('hit');
+        var key = event.key.toUpperCase();
+
+        current += key;
+        console.log(current);
+
+        var word = document.querySelector('[data-word^="' + current + '"]:not(.hit)');
+        var letter;
+
+        if (word) {
+          if (word.matches('[data-word="' + current + '"]:not(.hit)')) {
+            hit();
+            word.classList.add('hit');
+            current = "";
+          } else {
+            letter = word.querySelector('.letter[data-symbol="' + key + '"]:not(.hit)');
+
+            if (letter) {
+              letter.classList.add('hit');
+            } else {
+              current = "";
+              Array.from(document.querySelectorAll('.hit')).forEach((element) => element.classList.remove('hit'));
+              container.classList.add('shake');
+              missed();
+            }
+          }
         } else {
+          current = "";
+          Array.from(document.querySelectorAll('.hit')).forEach((element) => element.classList.remove('hit'));
+          container.classList.add('shake');
           missed();
         }
       }, false);
