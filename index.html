@@ -110,8 +110,12 @@
       background: #FFFCFC;
     }
 
-    .container {
-      padding: 1rem;
+    .osd {
+      position: fixed;
+      right: 150px;
+      top: 10px;
+      font-size: 18px;
+      font-style: bold;
     }
 
     .container:focus::after {
@@ -151,8 +155,10 @@
   </style>
   <body>
     <div id="canvas" class="container" tabindex=0>
-      <span>Missed: <span id="missed">0</span></span>
-      <span>Hit: <span id="hit">0</span></span>
+    </div>
+    <div class="osd">
+      <span style="display: none">Missed: <span id="missed">0</span></span>
+      <span>Points: <span id="hit">0</span></span>
     </div>
 
     <script>
@@ -292,6 +298,7 @@
           case "rain":
             missed();
             deleteElement(event.target);
+            container.classList.add('shake');
             break;
           case "hit":
             deleteElement(event.target);
