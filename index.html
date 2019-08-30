@@ -91,6 +91,7 @@
     .container:focus::after {
       display: none;
     }
+
     .container::after {
       color: red;
       content: "CLICK THE PAGE TO BE ABLE TO PLAY!";
@@ -132,8 +133,6 @@
       var container = document.getElementById('canvas');
 
       function createWord(word) {
-        console.log(word);
-
         var span = document.createElement('span');
         span.setAttribute('data-word', word.value);
         span.style.left = word.x;
@@ -267,7 +266,6 @@
         var key = event.key.toUpperCase();
 
         current += key;
-        console.log(current);
 
         var word = document.querySelector('[data-word^="' + current + '"]:not(.hit)');
         var letter;
@@ -284,14 +282,14 @@
               letter.classList.add('hit');
             } else {
               current = "";
-              Array.from(document.querySelectorAll('.hit')).forEach((element) => element.classList.remove('hit'));
+              Array.from(document.querySelectorAll('.hit:not(.word)')).forEach((element) => element.classList.remove('hit'));
               container.classList.add('shake');
               missed();
             }
           }
         } else {
           current = "";
-          Array.from(document.querySelectorAll('.hit')).forEach((element) => element.classList.remove('hit'));
+          Array.from(document.querySelectorAll('.hit:not(.word)')).forEach((element) => element.classList.remove('hit'));
           container.classList.add('shake');
           missed();
         }
