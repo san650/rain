@@ -277,13 +277,17 @@
       var missedElement = document.getElementById('missed');
       var hitElement = document.getElementById('hit');
 
+      function clean() {
+        Array.from(document.querySelectorAll('.word:not([data-word^="' + current + '"]):not(.hit)')).forEach((word) => {
+          Array.from(word.querySelectorAll('.letter.hit')).forEach((letter) => {
+            letter.classList.remove('hit');
+          });
+        });
+      }
+
       function missed() {
         missedCount++;
         missedElement.innerText = missedCount;
-
-        Array.from(
-          document.querySelectorAll('.hit:not(.word)')
-        ).forEach((element) => element.classList.remove('hit'));
         container.classList.add('shake');
       }
 
@@ -319,27 +323,39 @@
 
         current += key;
 
-        var word = document.querySelector('[data-word^="' + current + '"]:not(.hit)');
+        var words = Array.from(document.querySelectorAll('[data-word^="' + current + '"]:not(.hit)'));
         var letter;
+        var wordHits = 0;
+        var letterHits = 0;
 
-        if (word) {
-          if (word.matches('[data-word="' + current + '"]:not(.hit)')) {
-            hit(Number(word.getAttribute('data-value')));
-            word.classList.add('hit');
-            current = "";
-          } else {
+        clean();
+
+        if (!words.length) {
+          missed();
+        } else {
+          words.forEach((word) => {
             letter = word.querySelector('.letter[data-symbol="' + key + '"]:not(.hit)');
 
             if (letter) {
               letter.classList.add('hit');
-            } else {
-              current = "";
-              missed();
+              letterHits++;
             }
-          }
-        } else {
+
+            if (word.matches('[data-word="' + current + '"]:not(.hit)')) {
+              hit(Number(word.getAttribute('data-value')));
+              word.classList.add('hit');
+              wordHits++;
+            }
+          });
+        }
+
+        if (letterHits === 0) {
           current = "";
           missed();
+        }
+
+        if (wordHits === words.length) {
+          current = "";
         }
       }, false);
 
