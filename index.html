@@ -13,13 +13,38 @@
       height: 50px;
       font-size: 14px;
       font-weight: bold;
-      background: #DAC189;
-      color: #2C1901;
-      border: 2px solid #EBDDC0;
+      background: white;
+      color: #0A0A0A;
+      border: 1px solid rgba(10,10,10, .5);
+      border-radius: 3px;
+      margin-right: 2px;
+    }
+
+    .word.yellow .letter {
+      background: rgba(242,166,12, 1);
+    }
+
+    .word.red .letter {
+      background: rgba(199,20,20, 1);
+      color: #FFFCFC;
+    }
+
+    .word.blue .letter {
+      background: rgba(7,73,135, 1);
+      color: #FFFCFC;
+    }
+
+    .word.white .letter {
+      background: rgba(255,252,252, 1);
+    }
+
+    .word.green .letter {
+      background: rgba(77,178,81, 1);
     }
 
     .letter.hit {
-      background: yellow;
+      opacity: .5;
+      transform: scale(.9);
     }
 
     .letter::before {
@@ -82,6 +107,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
+      background: #FFFCFC;
     }
 
     .container {
@@ -135,9 +161,11 @@
       function createWord(word) {
         var span = document.createElement('span');
         span.setAttribute('data-word', word.value);
+        span.setAttribute('data-value', word.letters.reduce((sum, letter) => sum + letter.value, 0));
         span.style.left = word.x;
         span.classList.add('word');
         span.classList.add('rain');
+        span.classList.add(word.color);
         span.classList.add('d' + word.duration);
 
         word.letters.forEach((letter) => createLetter(span, letter));
@@ -169,6 +197,13 @@
 
       var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10];
+      var COLORS = [
+        "blue",
+        "green",
+        "red",
+        "white",
+        "yellow",
+      ];
       var WORDS = [
         "black",
         "blue",
@@ -184,6 +219,11 @@
         "white",
         "yellow",
       ];
+
+      function randomColor() {
+        var index = random(COLORS.length);
+        return COLORS[index];
+      }
 
       function randomWord() {
         var index = random(WORDS.length);
@@ -212,7 +252,7 @@
           duration: randomDuration(),
           letters: letters,
           value: word,
-          // value: letters.reduce((sum, letter) => sum + letter.value, 0),
+          color: randomColor(),
           x: randomPercentage(),
         };
       }
@@ -234,10 +274,15 @@
       function missed() {
         missedCount++;
         missedElement.innerText = missedCount;
+
+        Array.from(
+          document.querySelectorAll('.hit:not(.word)')
+        ).forEach((element) => element.classList.remove('hit'));
+        container.classList.add('shake');
       }
 
-      function hit() {
-        hitCount++;
+      function hit(value) {
+        hitCount += value;
         hitElement.innerText = hitCount;
       }
 
@@ -272,7 +317,7 @@
 
         if (word) {
           if (word.matches('[data-word="' + current + '"]:not(.hit)')) {
-            hit();
+            hit(Number(word.getAttribute('data-value')));
             word.classList.add('hit');
             current = "";
           } else {
@@ -282,24 +327,16 @@
               letter.classList.add('hit');
             } else {
               current = "";
-              Array.from(document.querySelectorAll('.hit:not(.word)')).forEach((element) => element.classList.remove('hit'));
-              container.classList.add('shake');
               missed();
             }
           }
         } else {
           current = "";
-          Array.from(document.querySelectorAll('.hit:not(.word)')).forEach((element) => element.classList.remove('hit'));
-          container.classList.add('shake');
           missed();
         }
       }, false);
 
       container.focus();
-
-      // var initialState = [
-      //    { symbol: "A", x: '10%', duration: 0, value: 1 },
-      // ].forEach(create);
     </script>
   </body>
 </html>
