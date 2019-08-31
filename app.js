@@ -37,7 +37,7 @@ function createUnstartedState(transitionTo) {
   return {
     enter: () => {
       document.body.innerHTML = `
-        <button id="start">Start</button>
+        <button class="start" id="start">Start</button>
       `;
       var button = document.getElementById('start');
       button.addEventListener('click', function() {
@@ -159,6 +159,7 @@ function createPlayingState(transitionTo) {
   var currentInterval;
   var container;
   var keyPressEventHandler;
+  var animationEndEventHandler;
 
   return {
     enter: () => {
@@ -207,7 +208,8 @@ function createPlayingState(transitionTo) {
       }, 2000);
 
       // cleanup
-      container.addEventListener("animationend", function(event) {
+      //
+      animationEndEventHandler = function(event) {
         switch(event.animationName) {
           case "rain":
             missedWord();
@@ -221,9 +223,10 @@ function createPlayingState(transitionTo) {
             container.classList.remove('shake');
             break;
         }
-      }, false);
+      }
+      container.addEventListener("animationend", animationEndEventHandler, false);
 
-      function handlerToRemove(event) {
+      keyPressEventHandler = function(event) {
         if (container.matches('.shake')) {
           return;
         }
@@ -269,8 +272,7 @@ function createPlayingState(transitionTo) {
       }
 
       // keyboard
-      container.addEventListener("keypress", handlerToRemove, false);
-      keyPressEventHandler = handlerToRemove;
+      container.addEventListener("keypress", keyPressEventHandler, false);
 
       container.focus();
     },
@@ -278,6 +280,7 @@ function createPlayingState(transitionTo) {
     exit: () => {
       window.clearInterval(currentInterval);
       container.removeEventListener("keypress", keyPressEventHandler, false);
+      container.removeEventListener("animationend", animationEndEventHandler, false);
     }
   };
 }
