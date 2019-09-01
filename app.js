@@ -128,8 +128,8 @@ function createPlayingState(transitionTo) {
     return random(10);
   }
 
-  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\'1';
-  var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10,10,1];
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\'!1';
+  var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10,10,10,1];
   var COLORS = [
     "blue",
     "green",
@@ -246,6 +246,10 @@ function createPlayingState(transitionTo) {
         reverse: (element) => {
           hitElement(element);
           container.classList.toggle('reverse');
+        },
+        'roll': (element) => {
+          hitElement(element);
+          container.classList.toggle('roll');
         }
       };
 
@@ -280,10 +284,12 @@ function createPlayingState(transitionTo) {
             deleteElement(event.target);
             break;
           case "shake":
-            container.classList.remove('shake');
+          case "roll":
+            container.classList.remove(event.animationName);
             break;
         }
       }
+
       container.addEventListener("animationend", animationEndEventHandler, false);
 
       keyPressEventHandler = function(event) {

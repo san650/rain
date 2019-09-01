@@ -79,6 +79,26 @@
       animation-direction: normal, reverse;
     }
 
+    .roll .letter {
+      animation-name: roll;
+      animation-iteration-count: 5;
+      animation-direction: normal;
+      animation-timing-function: ease-in;
+      animation-fill-mode: start;
+      animation-play-state: running;
+      animation-duration: 1s;
+      animation-delay: .3s;
+    }
+
+    @keyframes roll {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
     .word.hit {
       animation-play-state: running, paused;
     }
@@ -239,7 +259,8 @@
     /* powers */
     .word[data-word="CLEAN"] .letter,
     .word[data-word="1UP"] .letter,
-    .word[data-word="REVERSE"] .letter {
+    .word[data-word="REVERSE"] .letter,
+    .word[data-word="ROLL"] .letter {
       animation-name: scale;
       animation-iteration-count: infinite;
       animation-direction: alternate;
