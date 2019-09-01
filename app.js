@@ -153,7 +153,6 @@ function createPlayingState(transitionTo) {
     return VALUES[index];
   }
 
-
   function toWord(word) {
     word = word.toUpperCase();
 
