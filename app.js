@@ -269,7 +269,7 @@ function createPlayingState(transitionTo) {
 
         createWord(container, toWord(candidate));
         wordsElement.innerText = counter;
-      }, 2000);
+      }, 1500);
 
       // cleanup
       //
