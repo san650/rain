@@ -106,7 +106,6 @@ function createNextLevel(transitionTo) {
     enter: () => {
       var container = document.createElement('div');
       container.innerHTML = `
-        ${video()}
         <button class="start" id="start">NEXT LEVEL</button>
       `;
       document.body.appendChild(container);
