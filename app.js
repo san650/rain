@@ -50,6 +50,14 @@ var VIDEOS = [
     src: './bg/Night-Traffic.mp4',
     poster: './bg/Night-Traffic.jpg'
   },
+  {
+    src: './bg/Pigeon-Impossible.mp4',
+    poster: './bg/Pigeon-Impossible.jpg'
+  },
+  {
+    src: './bg/Textures.mp4',
+    poster: './bg/Textures.jpg'
+  },
 ];
 
 var wordCount = 10;
