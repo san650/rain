@@ -247,11 +247,16 @@ function createPlayingState(transitionTo) {
           hitElement(element);
           container.classList.toggle('reverse');
         },
-        'roll': (element) => {
+        roll: (element) => {
           hitElement(element);
           container.classList.toggle('roll');
         }
       };
+
+      function randomPower() {
+        var powers = Object.keys(POWERS);
+        return powers[random(powers.length)];
+      }
 
       currentInterval = window.setInterval(function generator() {
         if (!document.hasFocus()) {
@@ -263,8 +268,7 @@ function createPlayingState(transitionTo) {
         var candidate = randomWord();
 
         if (counter % 10 === 0) {
-          var powers = Object.keys(POWERS);
-          candidate = powers[random(powers.length)];
+          candidate = randomPower();
         }
 
         createWord(container, toWord(candidate));
