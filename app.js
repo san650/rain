@@ -18,6 +18,38 @@ var VIDEOS = [
     src: './bg/Cloud_Surf.mp4',
     poster: './bg/Cloud_Surf.jpg'
   },
+  {
+    src: './bg/Bull-Creek.mp4',
+    poster: './bg/Bull-Creek.jpg'
+  },
+  {
+    src: './bg/Twisted-Fire.mp4',
+    poster: './bg/Twisted-Fire.jpg'
+  },
+  {
+    src: './bg/Escalate.mp4',
+    poster: './bg/Escalate.jpg'
+  },
+  {
+    src: './bg/Drips.mp4',
+    poster: './bg/Drips.jpg'
+  },
+  {
+    src: './bg/Busy.mp4',
+    poster: './bg/Busy.jpg'
+  },
+  {
+    src: './bg/Beetle-Nut-Trees.mp4',
+    poster: './bg/Beetle-Nut-Trees.jpg'
+  },
+  {
+    src: './bg/Beetle-Nut-Trees.mp4',
+    poster: './bg/Beetle-Nut-Trees.jpg'
+  },
+  {
+    src: './bg/Night-Traffic.mp4',
+    poster: './bg/Night-Traffic.jpg'
+  },
 ];
 
 var wordCount = 10;
