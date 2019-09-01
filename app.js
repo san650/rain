@@ -1,6 +1,7 @@
 var states = {
   unstarted: createUnstartedState,
   playing: createPlayingState,
+  nextLevel: createNextLevel,
   gameOver: createGameOverState,
 };
 
@@ -18,6 +19,10 @@ var VIDEOS = [
     poster: './bg/Cloud_Surf.jpg'
   },
 ];
+
+var wordCount = 10;
+var gamePoints = 0;
+var levelCount = 1;
 
 function random(n) {
   return Math.floor(Math.random() * n);
@@ -55,6 +60,28 @@ function createGame() {
   };
 }
 
+function createNextLevel(transitionTo) {
+  return {
+    enter: () => {
+      var container = document.createElement('div');
+      container.innerHTML = `
+        ${video()}
+        <button class="start" id="start">NEXT LEVEL</button>
+      `;
+      document.body.appendChild(container);
+
+      var button = document.getElementById('start');
+      button.focus();
+      button.addEventListener('click', function() {
+        transitionTo('playing');
+      });
+      wordCount += 10;
+      levelCount += 1;
+    },
+    exit: () => {}
+  };
+}
+
 function createGameOverState(transitionTo) {
   return {
     enter: () => {
@@ -86,6 +113,7 @@ function createUnstartedState(transitionTo) {
         <button class="start" id="start">Start</button>
       `;
       var button = document.getElementById('start');
+      button.focus();
       button.addEventListener('click', function() {
         transitionTo('playing');
       });
@@ -200,8 +228,8 @@ function createPlayingState(transitionTo) {
       }
 
       function hit(value) {
-        points += value;
-        pointsElement.innerText = points;
+        gamePoints += value;
+        pointsElement.innerText = gamePoints;
       }
 
       function hitElement(element) {
@@ -213,14 +241,20 @@ function createPlayingState(transitionTo) {
         livesElement.innerText = '♡ ' + Math.max(lives - missedCount, 0);
       }
 
+      var currentWord = "";
+      var missedCount= 0;
+      var lives = 3;
+      var counter = 0;
+      var levelHits = 0;
 
       document.body.innerHTML = `
         ${video()}
         <div id="canvas" class="container" tabindex=0></div>
         <div class="osd">
           <span class="lives" id="lives">♡ 3</span>
-          <span class="words" id="words">0</span>
-          <span class="points" id="points">0</span>
+          <span class="words" id="words">${wordCount}</span>
+          <span class="points" id="points">${gamePoints}</span>
+          <span class="level" id="level">Level ${levelCount}</span>
         </div>
       `;
       container = document.getElementById('canvas');
@@ -228,11 +262,6 @@ function createPlayingState(transitionTo) {
       var pointsElement = document.getElementById('points');
       var wordsElement = document.getElementById('words');
 
-      var currentWord = "";
-      var missedCount= 0;
-      var lives = 3;
-      var points = 0;
-      var counter = 0;
       var POWERS = {
         clean: () => {
           // hit all!
@@ -258,6 +287,10 @@ function createPlayingState(transitionTo) {
         return powers[random(powers.length)];
       }
 
+      function updateLevelWordCount() {
+        wordsElement.innerText = wordCount - levelHits;
+      }
+
       currentInterval = window.setInterval(function generator() {
         if (!document.hasFocus()) {
           return;
@@ -272,7 +305,6 @@ function createPlayingState(transitionTo) {
         }
 
         createWord(container, toWord(candidate));
-        wordsElement.innerText = counter;
       }, 1500);
 
       // cleanup
@@ -331,6 +363,12 @@ function createPlayingState(transitionTo) {
                 hitElement(word);
               }
               wordHits++;
+              levelHits++;
+              updateLevelWordCount();
+
+              if (levelHits >= wordCount) {
+                transitionTo('nextLevel');
+              }
             }
           });
         }
