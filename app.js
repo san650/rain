@@ -4,6 +4,41 @@ var states = {
   gameOver: createGameOverState,
 };
 
+var VIDEOS = [
+  {
+    src: './bg/Words.mp4',
+    poster: './bg/Words.jpg'
+  },
+  {
+    src: './bg/Stormy_Night.mp4',
+    poster: './bg/Stormy_Night.jpg'
+  },
+  {
+    src: './bg/Cloud_Surf.mp4',
+    poster: './bg/Cloud_Surf.jpg'
+  },
+];
+
+function random(n) {
+  return Math.floor(Math.random() * n);
+}
+
+function video() {
+  var index = random(VIDEOS.length);
+  var video = VIDEOS[index];
+
+  return `
+  <video autoplay loop muted playsinline poster="${video.poster}" class="bg">
+    <source src="${video.src}" type="video/mp4">
+  </video>
+  `;
+}
+
+function deleteElement(element) {
+  var container = element.parentElement;
+  container.removeChild(element);
+}
+
 function transitionTo(game, nextStateName) {
   if (game.currentState) {
     game.currentState.exit();
@@ -28,6 +63,16 @@ function createGameOverState(transitionTo) {
       message.innerText = 'GAME OVER';
 
       document.body.appendChild(message);
+
+      var container = document.getElementById('canvas');
+
+      if (container) {
+        container.addEventListener("animationend", function(event) {
+          if (event.animationName === "rain") {
+            deleteElement(event.target);
+          }
+        }, false);
+      }
     },
     exit: () => {}
   };
@@ -37,6 +82,7 @@ function createUnstartedState(transitionTo) {
   return {
     enter: () => {
       document.body.innerHTML = `
+        ${video()}
         <button class="start" id="start">Start</button>
       `;
       var button = document.getElementById('start');
@@ -73,10 +119,6 @@ function createPlayingState(transitionTo) {
     parent.appendChild(span);
   }
 
-  function random(n) {
-    return Math.floor(Math.random() * n);
-  }
-
   function randomPercentage() {
     // Use less than 100 so it doesn't overflow on the right
     return String(Math.min(random(100), 60)) + '%';
@@ -92,21 +134,6 @@ function createPlayingState(transitionTo) {
     "blue",
     "green",
     "red",
-    "white",
-    "yellow",
-  ];
-  var WORDS = [
-    "black",
-    "blue",
-    "green",
-    "grey",
-    "magenta",
-    "maroon",
-    "olive",
-    "orange",
-    "pink",
-    "red",
-    "violet",
     "white",
     "yellow",
   ];
@@ -126,10 +153,6 @@ function createPlayingState(transitionTo) {
     return VALUES[index];
   }
 
-  function deleteElement(element) {
-    var container = element.parentElement;
-    container.removeChild(element);
-  }
 
   function toWord(word) {
     word = word.toUpperCase();
@@ -183,6 +206,7 @@ function createPlayingState(transitionTo) {
       }
 
       document.body.innerHTML = `
+        ${video()}
         <div id="canvas" class="container" tabindex=0></div>
         <div class="osd">
           <span class="lives" id="lives">3</span>
