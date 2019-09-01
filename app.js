@@ -128,8 +128,8 @@ function createPlayingState(transitionTo) {
     return random(10);
   }
 
-  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10];
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\'';
+  var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10,10];
   var COLORS = [
     "blue",
     "green",
@@ -187,7 +187,7 @@ function createPlayingState(transitionTo) {
     enter: () => {
       function missedWord() {
         missedCount++;
-        livesElement.innerText = Math.max(lives - missedCount, 0);
+        livesElement.innerText = '♡ ' + Math.max(lives - missedCount, 0);
         container.classList.add('shake');
 
         if (lives - missedCount <= 0) {
@@ -208,26 +208,47 @@ function createPlayingState(transitionTo) {
         ${video()}
         <div id="canvas" class="container" tabindex=0></div>
         <div class="osd">
-          <span class="lives" id="lives">3</span>
-          <span id="lives">/</span>
-          <span class="points" id="points">0</span></span>
+          <span class="lives" id="lives">♡ 3</span>
+          <span class="words" id="words">0</span>
+          <span class="points" id="points">0</span>
         </div>
       `;
       container = document.getElementById('canvas');
       var livesElement = document.getElementById('lives');
       var pointsElement = document.getElementById('points');
+      var wordsElement = document.getElementById('words');
 
       var currentWord = "";
       var missedCount= 0;
       var lives = 3;
       var points = 0;
+      var counter = 0;
+      var POWERS = {
+        clean: () => {
+          // hit all!
+          Array.from(document.querySelectorAll('.word')).forEach((element) => {
+            element.classList.add('hit');
+            hit(Number(element.dataset.value));
+          });
+        },
+      };
 
       currentInterval = window.setInterval(function generator() {
         if (!document.hasFocus()) {
           return;
         }
 
-        createWord(container, toWord(randomWord()));
+        counter++;
+
+        var candidate = randomWord();
+
+        if (counter % 10 === 0) {
+          var powers = Object.keys(POWERS);
+          candidate = powers[random(powers.length)];
+        }
+
+        createWord(container, toWord(candidate));
+        wordsElement.innerText = counter;
       }, 2000);
 
       // cleanup
@@ -277,8 +298,13 @@ function createPlayingState(transitionTo) {
             }
 
             if (word.matches('[data-word="' + currentWord + '"]:not(.hit)')) {
-              hit(Number(word.getAttribute('data-value')));
-              word.classList.add('hit');
+              var power;
+              if (power = POWERS[currentWord.toLowerCase()]) {
+                power(word);
+              } else {
+                word.classList.add('hit');
+                hit(Number(word.dataset.value));
+              }
               wordHits++;
             }
           });

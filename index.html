@@ -1,4 +1,6 @@
 <html>
+  <meta charset="UTF-8">
+  <title>RAIN</title>
   <style>
     .word {
       display: block;
@@ -111,20 +113,38 @@
     }
 
     .osd {
-      position: fixed;
-      right: 150px;
-      top: 10px;
-      font-size: 30px;
+      font-size: 5rem;
       font-style: bold;
       text-shadow: 0 0 3px black;
+      text-align: right;
     }
 
     .osd .lives {
+      position: fixed;
+      display: block;
       color: yellow;
+      font-size: 1.5rem;
+      border: 1px solid rgba(255,255,255,.5);
+      background: rgba(255,255,255,.1);
+      padding: 10px;
+      border-radius: 50%;
+      right: 100px;
+      bottom: 30px;
     }
 
     .osd .points {
+      position: fixed;
+      right: 150px;
+      top: 10px;
       color: red;
+    }
+
+    .osd .words {
+      position: fixed;
+      font-size: 5rem;
+      left: 150px;
+      top: 10px;
+      color: white;
     }
 
     .container:focus::after {
