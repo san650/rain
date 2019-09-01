@@ -23,6 +23,7 @@ var VIDEOS = [
 var wordCount = 10;
 var gamePoints = 0;
 var levelCount = 1;
+var lives = 3;
 
 function random(n) {
   return Math.floor(Math.random() * n);
@@ -243,7 +244,6 @@ function createPlayingState(transitionTo) {
 
       var currentWord = "";
       var missedCount= 0;
-      var lives = 3;
       var counter = 0;
       var levelHits = 0;
 
@@ -251,7 +251,7 @@ function createPlayingState(transitionTo) {
         ${video()}
         <div id="canvas" class="container" tabindex=0></div>
         <div class="osd">
-          <span class="lives" id="lives">♡ 3</span>
+          <span class="lives" id="lives">♡  ${lives}</span>
           <span class="words" id="words">${wordCount}</span>
           <span class="points" id="points">${gamePoints}</span>
           <span class="level" id="level">Level ${levelCount}</span>
