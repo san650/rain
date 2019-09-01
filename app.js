@@ -128,8 +128,8 @@ function createPlayingState(transitionTo) {
     return random(10);
   }
 
-  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\'';
-  var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10,10];
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\'1';
+  var VALUES =  [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10,10,1];
   var COLORS = [
     "blue",
     "green",
@@ -187,7 +187,7 @@ function createPlayingState(transitionTo) {
     enter: () => {
       function missedWord() {
         missedCount++;
-        livesElement.innerText = '♡ ' + Math.max(lives - missedCount, 0);
+        renderLives();
         container.classList.add('shake');
 
         if (lives - missedCount <= 0) {
@@ -203,6 +203,16 @@ function createPlayingState(transitionTo) {
         points += value;
         pointsElement.innerText = points;
       }
+
+      function hitElement(element) {
+        element.classList.add('hit');
+        hit(Number(element.dataset.value));
+      }
+
+      function renderLives() {
+        livesElement.innerText = '♡ ' + Math.max(lives - missedCount, 0);
+      }
+
 
       document.body.innerHTML = `
         ${video()}
@@ -226,11 +236,17 @@ function createPlayingState(transitionTo) {
       var POWERS = {
         clean: () => {
           // hit all!
-          Array.from(document.querySelectorAll('.word')).forEach((element) => {
-            element.classList.add('hit');
-            hit(Number(element.dataset.value));
-          });
+          Array.from(document.querySelectorAll('.word')).forEach(hitElement);
         },
+        '1up': (element) => {
+          lives++;
+          renderLives();
+          hitElement(element);
+        },
+        reverse: (element) => {
+          hitElement(element);
+          container.classList.toggle('reverse');
+        }
       };
 
       currentInterval = window.setInterval(function generator() {
@@ -302,8 +318,7 @@ function createPlayingState(transitionTo) {
               if (power = POWERS[currentWord.toLowerCase()]) {
                 power(word);
               } else {
-                word.classList.add('hit');
-                hit(Number(word.dataset.value));
+                hitElement(word);
               }
               wordHits++;
             }
