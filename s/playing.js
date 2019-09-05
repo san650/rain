@@ -1,6 +1,6 @@
 import video, { randomVideo } from '../c/video.js';
 import osd from '../c/osd.js';
-import {random} from '../random.js';
+import {random, randomFrom} from '../random.js';
 import WORDS from '../words.js';
 
 export default function(game, transitionTo) {
@@ -58,7 +58,7 @@ export default function(game, transitionTo) {
       var POWERS = {
         clean: () => {
           // hit all!
-          Array.from(document.querySelectorAll('.word')).forEach(hitElement);
+          byCSS(document, '.word').forEach(hitElement);
         },
         '1up': (element) => {
           game.lives++;
@@ -130,7 +130,7 @@ export default function(game, transitionTo) {
 
         state.currentWord += key;
 
-        var words = Array.from(document.querySelectorAll('[data-word^="' + state.currentWord + '"]:not(.hit)'));
+        var words = byCSS(document, '[data-word^="' + state.currentWord + '"]:not(.hit)');
         var letter;
         var wordHits = 0;
         var letterHits = 0;
@@ -234,13 +234,11 @@ var COLORS = [
 ];
 
 function randomColor() {
-  var index = random(COLORS.length);
-  return COLORS[index];
+  return randomFrom(COLORS);
 }
 
 function randomWord() {
-  var index = random(WORDS.length);
-  return WORDS[index];
+  return randomFrom(WORDS);
 }
 
 function valueForSymbol(symbol) {
@@ -265,11 +263,13 @@ function toWord(word) {
   };
 }
 
+function byCSS(element, selector) {
+  return Array.from(element.querySelectorAll(selector));
+};
+
 function clean(currentWord) {
-  Array.from(document.querySelectorAll('.word:not([data-word^="' + currentWord + '"]):not(.hit)')).forEach((word) => {
-    Array.from(word.querySelectorAll('.letter.hit')).forEach((letter) => {
-      letter.classList.remove('hit');
-    });
+  byCSS(document, `.word:not([data-word^="${currentWord}"]):not(.hit) .letter.hit`).forEach((element) => {
+    element.classList.remove('hit');
   });
 }
 
