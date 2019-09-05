@@ -302,11 +302,11 @@
       }
     }
   </style>
-  <body></body>
-  <script src="words.js"></script>
-  <script src="app.js"></script>
-  <script>
+  <script type=module defer>
+    import {createGame, transitionTo} from "./app.js";
+
     var game = createGame();
     transitionTo(game, 'unstarted');
   </script>
+  <body></body>
 </html>
