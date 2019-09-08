@@ -1,7 +1,7 @@
 import video, { randomVideo } from '../c/video.js';
 import osd from '../c/osd.js';
-import {random, randomFrom} from '../random.js';
-import WORDS from '../words.js';
+import {random, randomFrom} from '../l/random.js';
+import WORDS from '../l/words.js';
 
 export default function(game, transitionTo) {
   var currentInterval;
