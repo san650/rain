@@ -171,6 +171,39 @@
       color: white;
     }
 
+    .osd .title {
+      z-index: 1;
+      position: fixed;
+      text-align: center;
+      pointer-events: none;
+      top: 30px;
+      width: 100vw;
+      font-size: 3rem;
+      font-weight: bold;
+      font-family: arial;
+      color: rgba(255,255,255,.9);
+      text-shadow: 0 0 1px black;
+      display: block;
+      animation-name: hide;
+      animation-iteration-count: 1;
+      animation-direction: normal;
+      animation-timing-function: ease-in;
+      animation-fill-mode: forwards;
+      animation-play-state: running;
+      animation-duration: 1s;
+      animation-delay: 3s;
+    }
+
+    @keyframes hide {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
     .container:focus::after {
       display: none;
     }
@@ -297,37 +330,6 @@
       }
     }
 
-    .level-title {
-      z-index: 1;
-      position: fixed;
-      width: 100%;
-      text-align: center;
-      pointer-events: none;
-      top: 30px;
-      font-size: 3em;
-      font-weight: bold;
-      font-family: arial;
-      color: rgba(255,255,255,.9);
-      text-shadow: 0 0 1px black;
-      animation-name: hide;
-      animation-iteration-count: 1;
-      animation-direction: normal;
-      animation-timing-function: ease-in;
-      animation-fill-mode: forwards;
-      animation-play-state: running;
-      animation-duration: 1s;
-      animation-delay: 3s;
-    }
-
-    @keyframes hide {
-      0% {
-        opacity: 1;
-      }
-
-      100% {
-        opacity: 0;
-      }
-    }
   </style>
   <script type=module defer>
     import {createGame, transitionTo} from "./app.js";
