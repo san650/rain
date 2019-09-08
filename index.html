@@ -171,19 +171,6 @@
       color: white;
     }
 
-    .osd .level {
-      position: fixed;
-      display: block;
-      color: yellow;
-      font-size: 1.5rem;
-      border: 1px solid rgba(255,255,255,.5);
-      background: rgba(255,255,255,.1);
-      left: 10px;
-      top: 10px;
-      width: 60px;
-      text-align: center;
-    }
-
     .container:focus::after {
       display: none;
     }
@@ -229,7 +216,7 @@
     }
 
     .start {
-      color: green;
+      color: rgba(255,255,255,.99);
       text-shadow: 0px 0px 2px black;
       position: fixed;
       border: none;
@@ -243,7 +230,9 @@
       text-align: center;
       line-height: 1vw;
       width: 100%;
-      font-size: 5rem;
+      font-size: 6rem;
+      font-weight: bold;
+      font-family: arial;
 
       animation-name: start;
       animation-iteration-count: infinite;
@@ -252,6 +241,12 @@
       animation-fill-mode: forwards;
       animation-play-state: running;
       animation-duration: .8s;
+    }
+    .start span {
+      line-height: 3rem;
+    }
+    .start small {
+      font-size: 4rem;
     }
 
     @keyframes start {
@@ -299,6 +294,38 @@
       100% {
         /* transform: scale(1.1); */
         box-shadow: 0 0 15px yellow;
+      }
+    }
+
+    .level-title {
+      z-index: 1;
+      position: fixed;
+      width: 100%;
+      text-align: center;
+      pointer-events: none;
+      top: 30px;
+      font-size: 3em;
+      font-weight: bold;
+      font-family: arial;
+      color: rgba(255,255,255,.9);
+      text-shadow: 0 0 1px black;
+      animation-name: hide;
+      animation-iteration-count: 1;
+      animation-direction: normal;
+      animation-timing-function: ease-in;
+      animation-fill-mode: forwards;
+      animation-play-state: running;
+      animation-duration: 1s;
+      animation-delay: 3s;
+    }
+
+    @keyframes hide {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
       }
     }
   </style>

@@ -1,10 +1,10 @@
-export default function({lives, wordCount, points, level}) {
+export default function(game, level) {
   return `
     <div class="osd">
-      <span class="lives" id="lives">♡  ${lives}</span>
-      <span class="words" id="words">${wordCount}</span>
-      <span class="points" id="points">${points}</span>
-      <span class="level" id="level">Level ${level}</span>
+      <span class="level-title">Level ${game.level}</span>
+      <span class="lives" id="lives">♡  ${game.lives}</span>
+      <span class="words" id="words">${level.target - level.hits}</span>
+      <span class="points" id="points">${game.points}</span>
     </div>
   `;
 }

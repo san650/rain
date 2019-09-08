@@ -23,7 +23,6 @@ export function createGame() {
   return {
     states: STATES,
     currentState: null,
-    wordCount: 10,
     points: 0,
     level: 1,
     lives: 3,

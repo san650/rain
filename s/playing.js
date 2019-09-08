@@ -3,28 +3,45 @@ import osd from '../c/osd.js';
 import {random, randomFrom} from '../l/random.js';
 import WORDS from '../l/words.js';
 
+function createState(game) {
+  return {
+    currentWord: "",
+    missed: 0,
+    counter: 0,
+    hits: 0,
+    target: 10
+  };
+}
+
+function setState(oldState, newState, onStateChanged) {
+  var state = {
+    ...oldState,
+    newState
+  };
+
+  onStateChanged(state);
+
+  return state;
+}
+
 export default function(game, transitionTo) {
   var currentInterval;
   var container;
   var keyPressEventHandler;
   var animationEndEventHandler;
-  const state = {
-    currentWord: "",
-    missed: 0,
-    counter: 0,
-    hits: 0
-  };
+  var state = createState(game);
+  var wordGenerator = levelWordGenerator(game.level, WORDS);
 
   return {
     enter: () => {
-      function missedWord() {
-        state.missed++;
-        renderLives();
-        container.classList.add('shake');
-
+      function onStateChanged(state) {
+        // end conditions
         if (game.lives - state.missed <= 0) {
           transitionTo(game, 'gameOver');
         }
+
+        // render lives
+        livesElement.innerText = '♡ ' + Math.max(game.lives - state.missed, 0);
       }
 
       function missedLetter() {
@@ -41,14 +58,10 @@ export default function(game, transitionTo) {
         hit(Number(element.dataset.value));
       }
 
-      function renderLives() {
-        livesElement.innerText = '♡ ' + Math.max(game.lives - state.missed, 0);
-      }
-
       document.body.innerHTML = `
         ${video(randomVideo())}
         <div id="canvas" class="container" tabindex=0></div>
-        ${osd(game)}
+        ${osd(game, state)}
       `;
       container = document.getElementById('canvas');
       var livesElement = document.getElementById('lives');
@@ -62,7 +75,7 @@ export default function(game, transitionTo) {
         },
         '1up': (element) => {
           game.lives++;
-          renderLives();
+          state = setState(state, {}, onStateChanged);
           hitElement(element);
         },
         reverse: (element) => {
@@ -81,7 +94,7 @@ export default function(game, transitionTo) {
       }
 
       function updateLevelWordCount() {
-        wordsElement.innerText = game.wordCount - state.hits;
+        wordsElement.innerText = state.target - state.hits;
       }
 
       currentInterval = window.setInterval(function generator() {
@@ -91,21 +104,23 @@ export default function(game, transitionTo) {
 
         state.counter++;
 
-        var candidate = randomWord();
+        var candidate = wordGenerator();
 
-        if (state.counter % 10 === 0) {
+        if (game.level > 3 && state.counter % 10 === 0) {
           candidate = randomPower();
         }
 
         createWord(container, toWord(candidate));
-      }, 1500);
+      }, 1000);
 
       // cleanup
       //
       animationEndEventHandler = function(event) {
         switch(event.animationName) {
           case "rain":
-            missedWord();
+            state = setState(state, {
+              missed: state.missed++
+            }, onStateChanged);
             deleteElement(event.target);
             container.classList.add('shake');
             break;
@@ -159,7 +174,7 @@ export default function(game, transitionTo) {
               state.hits++;
               updateLevelWordCount();
 
-              if (state.hits >= game.wordCount) {
+              if (state.hits >= state.target) {
                 transitionTo(game, 'nextLevel');
               }
             }
@@ -237,10 +252,6 @@ function randomColor() {
   return randomFrom(COLORS);
 }
 
-function randomWord() {
-  return randomFrom(WORDS);
-}
-
 function valueForSymbol(symbol) {
   var index = LETTERS.indexOf(symbol);
   return VALUES[index];
@@ -276,4 +287,33 @@ function clean(currentWord) {
 function deleteElement(element) {
   var container = element.parentElement;
   container.removeChild(element);
+}
+
+function randomWordGenerator(words) {
+  return () => randomFrom(words);
+}
+
+function levelWordGenerator(level, words) {
+  let generator;
+
+  switch(level) {
+    case 1:
+    case 2:
+    case 3:
+      generator = randomWordGenerator(words.filter((w) => w.length <= 4));
+      break;
+    case 4:
+    case 5:
+    case 6:
+      generator = randomWordGenerator(words.filter((w) => w.length <= 5));
+      break;
+    case 7:
+      generator = randomWordGenerator(words.filter((w) => w.length > 4 && w.length <= 5));
+      break;
+    default:
+      generator = randomWordGenerator(words);
+      break;
+  }
+
+  return generator;
 }
