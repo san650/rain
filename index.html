@@ -63,7 +63,7 @@
       bottom: 1px;
       right: 7px;
       display: block;
-      content: attr(data-symbol-value);
+      content: attr(data-value);
     }
 
     .rain {
@@ -124,8 +124,12 @@
     }
 
     @keyframes hit {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
     }
 
     html, body, .container {

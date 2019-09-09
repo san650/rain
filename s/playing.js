@@ -1,5 +1,7 @@
 import video, { randomVideo } from '../c/video.js';
 import osd from '../c/osd.js';
+import wordComponent from '../c/word.js';
+import toElement from '../l/toElement.js';
 import {random, randomFrom} from '../l/random.js';
 import WORDS from '../l/words.js';
 
@@ -16,7 +18,7 @@ function createState(game) {
 function setState(oldState, newState, onStateChanged) {
   var state = {
     ...oldState,
-    newState
+    ...newState
   };
 
   onStateChanged(state);
@@ -36,12 +38,12 @@ export default function(game, transitionTo) {
     enter: () => {
       function onStateChanged(state) {
         // end conditions
-        if (game.lives - state.missed <= 0) {
+        if (game.lives <= 0) {
           transitionTo(game, 'gameOver');
         }
 
         // render lives
-        livesElement.innerText = '♡ ' + Math.max(game.lives - state.missed, 0);
+        livesElement.innerText = '♡ ' + Math.max(game.lives, 0);
       }
 
       function missedLetter() {
@@ -102,15 +104,25 @@ export default function(game, transitionTo) {
           return;
         }
 
-        state.counter++;
+        state = setState(state, {
+          counter: state.counter + 1
+        }, onStateChanged);
 
-        var candidate = wordGenerator();
+        var candidate;
 
         if (game.level > 3 && state.counter % 10 === 0) {
           candidate = randomPower();
+        } else {
+          candidate = wordGenerator()
         }
 
-        createWord(container, toWord(candidate));
+        container.appendChild(
+          toElement(
+            wordComponent(
+              toWord(candidate)
+            )
+          )
+        );
       }, 1000);
 
       // cleanup
@@ -118,8 +130,9 @@ export default function(game, transitionTo) {
       animationEndEventHandler = function(event) {
         switch(event.animationName) {
           case "rain":
+            game.lives--;
             state = setState(state, {
-              missed: state.missed++
+              missed: state.missed + 1
             }, onStateChanged);
             deleteElement(event.target);
             container.classList.add('shake');
@@ -206,27 +219,6 @@ export default function(game, transitionTo) {
 }
 
 function createWord(container, word) {
-  var span = document.createElement('span');
-  span.setAttribute('data-word', word.value);
-  span.setAttribute('data-value', word.letters.reduce((sum, letter) => sum + letter.value, 0));
-  span.style.left = word.x;
-  span.classList.add('word');
-  span.classList.add('rain');
-  span.classList.add(word.color);
-  span.classList.add('d' + word.duration);
-
-  word.letters.forEach((letter) => createLetter(span, letter));
-
-  container.appendChild(span);
-}
-
-function createLetter(parent, letter) {
-  var span = document.createElement('span');
-  span.setAttribute('data-symbol', letter.symbol);
-  span.setAttribute('data-symbol-value', letter.value);
-  span.classList.add('letter');
-
-  parent.appendChild(span);
 }
 
 function randomPercentage() {
