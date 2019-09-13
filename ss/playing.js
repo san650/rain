@@ -1,6 +1,6 @@
-import video, { randomVideo } from '../c/video.js';
-import osd from '../c/osd.js';
-import wordComponent from '../c/word.js';
+import video, { randomVideo } from '../cc/video.js';
+import osd from '../cc/osd.js';
+import wordComponent from '../cc/word.js';
 import toElement from '../ll/toElement.js';
 import {random, randomFrom} from '../ll/random.js';
 import WORDS from '../ll/words.js';

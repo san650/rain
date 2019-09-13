@@ -1,4 +1,4 @@
-import video, { randomVideo } from '../c/video.js';
+import video, { randomVideo } from '../cc/video.js';
 
 export default function(game, transitionTo) {
   return {
