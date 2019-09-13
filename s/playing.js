@@ -1,9 +1,9 @@
 import video, { randomVideo } from '../c/video.js';
 import osd from '../c/osd.js';
 import wordComponent from '../c/word.js';
-import toElement from '../l/toElement.js';
-import {random, randomFrom} from '../l/random.js';
-import WORDS from '../l/words.js';
+import toElement from '../ll/toElement.js';
+import {random, randomFrom} from '../ll/random.js';
+import WORDS from '../ll/words.js';
 
 function createState(game) {
   return {
