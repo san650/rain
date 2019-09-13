@@ -6,6 +6,10 @@
       display: block;
       position: fixed;
       height: 50px;
+
+      /* hardware acceleration */
+      transform: translate3d(0,0,0);
+      transform-style: preserve-3d;
     }
 
     .letter {
@@ -20,6 +24,10 @@
       border: 1px solid rgba(10,10,10, .5);
       border-radius: 3px;
       margin-right: 2px;
+
+      /* hardware acceleration */
+      transform: translate3d(0,0,0);
+      transform-style: preserve-3d;
     }
 
     .word.yellow .letter {
@@ -83,11 +91,10 @@
       animation-name: roll;
       animation-iteration-count: 5;
       animation-direction: normal;
-      animation-timing-function: ease-in;
-      animation-fill-mode: start;
+      animation-timing-function: ease-in-out;
+      animation-fill-mode: both;
       animation-play-state: running;
-      animation-duration: 1s;
-      animation-delay: .3s;
+      animation-duration: 4s;
     }
 
     @keyframes roll {
