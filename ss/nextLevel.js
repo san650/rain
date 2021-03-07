@@ -1,4 +1,8 @@
 export default function(game, transitionTo) {
+  function handleClick() {
+    transitionTo(game, 'playing');
+  }
+
   return {
     enter: () => {
       var container = document.createElement('div');
@@ -14,12 +18,13 @@ export default function(game, transitionTo) {
 
       var button = document.getElementById('start');
       button.focus();
-      button.addEventListener('click', function() {
-        transitionTo(game, 'playing');
-      });
+      button.addEventListener('click', handleClick);
       game.wordCount += 10;
       game.level += 1;
     },
-    exit: () => {}
+    exit: () => {
+      var button = document.getElementById('start');
+      button.removeEventListener('click', handleClick);
+    }
   };
 }

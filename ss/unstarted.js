@@ -1,6 +1,10 @@
 import video, { randomVideo } from '../cc/video.js';
 
 export default function(game, transitionTo) {
+  function handleClick() {
+    transitionTo(game, 'playing');
+  }
+
   return {
     enter: () => {
       document.body.innerHTML = `
@@ -15,10 +19,11 @@ export default function(game, transitionTo) {
       `;
       var button = document.getElementById('start');
       button.focus();
-      button.addEventListener('click', function() {
-        transitionTo(game, 'playing');
-      });
+      button.addEventListener('click', handleClick);
     },
-    exit: () => {}
+    exit: () => {
+      var button = document.getElementById('start');
+      button.removeEventListener('click', handleClick);
+    }
   };
 }
