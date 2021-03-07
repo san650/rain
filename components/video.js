@@ -12,7 +12,7 @@ export function randomVideo() {
   return randomFrom(VIDEOS);
 }
 
-const VIDEOS = [
+export const VIDEOS = [
   {
     src: './assets/Words.mp4',
     poster: './assets/Words.jpg'

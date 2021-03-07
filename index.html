@@ -352,5 +352,20 @@
     var game = createGame();
     transitionTo(game, 'unstarted');
   </script>
+  <script type=module defer>
+    import {VIDEOS} from "./components/video.js";
+
+    function prefetch(resource) {
+      return `<link rel="prefetch" href="${resource}">`;
+    }
+
+    const imports = VIDEOS.reduce((imports, video) =>
+      imports.push(prefetch(video.poster)) && imports
+    , [])
+
+    const dummy = document.createElement('div')
+    dummy.innerHTML = imports.join();
+    Array.from(dummy.childNodes).forEach((node) => document.head.appendChild(node))
+  </script>
   <body></body>
 </html>
