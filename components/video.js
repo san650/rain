@@ -1,4 +1,4 @@
-import {randomFrom} from '../ll/random.js';
+import {randomFrom} from '../library/random.js';
 
 export default function({poster, src}) {
   return `

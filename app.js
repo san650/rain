@@ -1,7 +1,7 @@
-import Unstarted from './ss/unstarted.js';
-import Playing from './ss/playing.js';
-import NextLevel from './ss/nextLevel.js';
-import GameOver from './ss/gameOver.js';
+import Unstarted from './screens/unstarted.js';
+import Playing from './screens/playing.js';
+import NextLevel from './screens/nextLevel.js';
+import GameOver from './screens/gameOver.js';
 
 const STATES = {
   unstarted: Unstarted,

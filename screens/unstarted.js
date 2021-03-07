@@ -1,4 +1,4 @@
-import video, { randomVideo } from '../cc/video.js';
+import video, { randomVideo } from '../components/video.js';
 
 export default function(game, transitionTo) {
   function handleClick() {

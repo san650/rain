@@ -1,9 +1,9 @@
-import video, { randomVideo } from '../cc/video.js';
-import osd from '../cc/osd.js';
-import wordComponent from '../cc/word.js';
-import toElement from '../ll/toElement.js';
-import {random, randomFrom} from '../ll/random.js';
-import WORDS from '../ll/words.js';
+import video, { randomVideo } from '../components/video.js';
+import osd from '../components/osd.js';
+import wordComponent from '../components/word.js';
+import toElement from '../library/toElement.js';
+import {random, randomFrom} from '../library/random.js';
+import WORDS from '../library/words.js';
 
 function createState(game) {
   return {
