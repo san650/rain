@@ -3,7 +3,12 @@ export default function(game, transitionTo) {
     enter: () => {
       var container = document.createElement('div');
       container.innerHTML = `
-        <button class="start" id="start">NEXT LEVEL</button>
+        <button class="start" id="start">
+          <span>
+          NEXT LEVEL
+          <br>
+          <small>(hit space to continue)<small>
+        </button>
       `;
       document.body.appendChild(container);
 
